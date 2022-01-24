@@ -1,0 +1,154 @@
+/*
+
+given the pre-order traversal of a binary tree, design a recursive algorithm 
+to compute its diameter
+
+	  diameter of a binary tree is the length of the longest path between any 
+	  two nodes in the binary tree.
+
+Example : Input  : 10 20 40 -1 -1 50 70 -1 -1 -1 30 -1 60 -1 -1
+          Output : 5
+
+          Input  : 10 20 30 50 -1 -1 -1 40 -1 60 -1 -1 70 -1 -1
+          Output : 4
+          
+          Input  : 10 20 -1 -1 30 40 60 -1 -1 -1 50 -1 70 -1 -1
+          Output : 4
+          
+*/
+
+#include<iostream>
+
+using namespace std;
+
+class node {
+public:
+	int data;
+	node* left;
+	node* right;
+
+	node(int data) {
+		this->data = data;
+		this->left = this->right = NULL;
+	}
+};
+
+
+node* buildTree() {
+
+	// 1. read the data of the root node
+	int data;
+	cin >> data;
+
+	if(data == -1) {
+		// construct an empty tree and return the pointer to its root
+		return NULL;
+	}
+
+	// 2. construct the root node
+	node* root = new node(data);
+
+	// 3. read the preOrder traversal of the leftSubtree & build the leftSubtree
+	root->left = buildTree();
+
+	// 4. read the preOrder traversal of the rightSubtree & build the rightSubtree
+	root->right = buildTree();
+
+	return root;
+
+}
+
+int height(node* root) {
+
+	// base case
+	if(root == NULL) {
+		// compute the height of an empty tree
+		return -1;
+	}
+
+	// recursive case
+
+	// 1. compute the height of the leftSubtree -- ask your friend
+	int X = height(root->left);
+
+	// 2. compute the height of the rightSubtree -- ask your friend
+	int Y = height(root->right);
+
+	return 1 + max(X, Y);
+
+}
+
+
+int diameter(node* root) {
+
+	// base case
+	if(root == NULL) {
+		// compute the diameter of empty tree
+		return 0;
+	}
+
+	// recursive case
+
+	// 1. compute the diameter of the leftSubtree -- ask your friend
+	int X = diameter(root->left);
+
+	// 2. compute the diamter of the rightSubtree -- ask your friend
+	int Y = diameter(root->right);
+
+	// 3. compute the length of the longest path between any two nodes that passes through the root
+	int Z = height(root->left) + height(root->right) + 2;
+
+	return max(X, max(Y, Z)); 
+
+}
+
+class Pair {
+public: 
+
+	int diameter;
+	int height;
+
+};
+
+Pair diameterEfficient(node* root) {
+
+	Pair p;
+
+	// base case
+	
+	if(root == NULL) {
+		// compute the height & diamter of an empty tree
+		p.height = -1;
+		p.diameter = 0;
+		return p;
+	}
+
+	// recursive case 
+
+	// 1. compute the diameter & the height of the leftSubtree simultaneouly -- ask your friend
+	Pair pL = diameterEfficient(root->left);
+
+	// 2. compute the diameter & the height of the rightSubtree simultaneously -- ask your friend
+	Pair pR = diameterEfficient(root->right);
+
+    // 3. compute the length of the longest path between any two nodes that passes through the root
+	int Z = pL.height + pR.height + 2;
+
+	p.height = max(pL.height, pR.height) + 1;
+	p.diameter = max(pL.diameter, max(pR.diameter, Z));
+
+	return p;
+}
+
+int main() {
+
+	node* root = buildTree();
+
+	cout << diameter(root) << endl;
+
+	Pair p = diameterEfficient(root);
+
+	cout << "height: " << p.height << " diameter : " << p.diameter << endl;
+
+	return 0;
+}

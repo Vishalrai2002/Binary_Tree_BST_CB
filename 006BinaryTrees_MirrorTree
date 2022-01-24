@@ -1,0 +1,104 @@
+/*
+
+given the pre-order traversal of a binary tree, design a recursive 
+algorithm to mirror it.
+
+Example : Input  : 10 20 40 -1 -1 50 70 -1 -1 -1 30 -1 60 -1 -1
+          Output : 10 30 60 -1 -1 -1 20 50 -1 70 -1 -1 40 -1 -1
+                  
+*/
+
+#include<iostream>
+
+using namespace std;
+
+class node {
+public:
+	int data;
+	node* left;
+	node* right;
+
+	node(int data) {
+		this->data = data;
+		this->left = this->right = NULL;
+	}
+};
+
+
+node* buildTree() {
+
+	// 1. read the data of the root node
+	int data;
+	cin >> data;
+
+	if(data == -1) {
+		// construct an empty tree and return the pointer to its root
+		return NULL;
+	}
+
+	// 2. construct the root node
+	node* root = new node(data);
+
+	// 3. read the preOrder traversal of the leftSubtree & build the leftSubtree
+	root->left = buildTree();
+
+	// 4. read the preOrder traversal of the rightSubtree & build the rightSubtree
+	root->right = buildTree();
+
+	return root;
+
+}
+
+void preOrder(node* root) {
+
+	// base case
+	if(!root) { // or root == NULL
+		// root represents an empty tree
+		cout << "-1 ";
+		return;
+	}
+
+	// recursive case
+
+	// 1. process the data in the root node
+	cout << root->data << " ";
+
+	// 2. do the preOrder traversal of the leftSubtree -- ask your friend
+	preOrder(root->left);
+
+	// 3. do the preOrder traversal of the rightSubtree -- ask your friend
+	preOrder(root->right);
+
+}
+
+node* mirror(node* root) {
+
+	// base case
+	if(root == NULL) {
+		// mirror the empty tree
+		return NULL;
+	}
+
+	// recursive case
+
+	// 1. mirror the leftSubtree -- ask your friend
+	root->left = mirror(root->left);
+
+	// 2. mirror the rightSubtree -- ask your friend
+	root->right = mirror(root->right);
+
+	// 3. swap the left & right child of the root node
+	swap(root->left, root->right);
+
+	return root;
+
+}
+
+int main() {
+
+	node* root = buildTree();
+	root = mirror(root);
+	preOrder(root);
+	
+	return 0;
+}

@@ -78,7 +78,7 @@ node* buildTree(int* pre, int* in, int s, int e) {
 		return NULL;
 	}
 
-// Extract the value of preOrder the incrment it
+// Extract the value of preOrder the incrment I
 	int x = pre[i]; i++;
 	node* root = new node(x);
 

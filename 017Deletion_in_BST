@@ -1,0 +1,202 @@
+/*
+
+    Given a BST and a key,  design an algorithm to delete
+    the node with the given key, if present, from the BST.
+
+*/
+
+#include <iostream>
+#include <queue>
+
+using namespace std;
+
+class node
+{
+public:
+    int data;
+    node *left;
+    node *right;
+
+    node(int data)
+    {
+        this->data = data;
+        this->left = this->right = NULL;
+    }
+};
+
+void levelOrder(node *root)
+{
+    queue<node *> q;
+    q.push(root);
+    q.push(NULL);
+
+    while (!q.empty())
+    {
+        node *front = q.front();
+        q.pop();
+        if (front == NULL)
+        {
+            cout << endl;
+            if (!q.empty())
+            {
+                q.push(NULL);
+            }
+        }
+        else
+        {
+            cout << front->data << " ";
+            if (front->left)
+                q.push(front->left);
+            if (front->right)
+                q.push(front->right);
+        }
+    }
+}
+
+void inOrder(node *root)
+{
+    if (root == NULL)
+    {
+        return;
+    }
+
+    inOrder(root->left);
+    cout << root->data << " ";
+    inOrder(root->right);
+}
+
+node *findMaximum(node *root)
+{
+    if (!root)
+    {
+        return NULL;
+    }
+
+    while (root->right != NULL)
+    {
+        root = root->right;
+    }
+
+    return root;
+}
+
+node *findMinimum(node *root)
+{
+    if (!root)
+    {
+        return NULL;
+    }
+
+    while (root->left != NULL)
+    {
+        root = root->left;
+    }
+
+    return root;
+}
+
+node *deleteFromBST(node *root, int key)
+{
+
+    // base case
+    if (!root)
+    {
+        return root;
+    }
+
+    // recursive case
+
+    if (key < root->data)
+    {
+        // delete the node with the given key from the leftSubtree
+        root->left = deleteFromBST(root->left, key);
+    }
+    else if (key > root->data)
+    {
+        // delete the node with the given key from the rightSubtree
+        root->right = deleteFromBST(root->right, key);
+    }
+    else
+    {
+        // delete the root(current) node
+        if (!root->left && !root->right)
+        {
+            // you want to delete a leaf node
+            delete root; // deleted the leaf node
+            root = NULL; // by doing this leaf node memory is occupied by NULL
+        }
+        else if (!root->left && root->right)
+        {
+            // you want to delete a node with a single child which is a right child
+            node *temp = root->right; // first store the address in temp
+            delete root; // then delete the root
+            root = temp; // then make out temp as a root
+        }
+        else if (root->left && !root->right)
+        {
+            // you want to delete a node with a single child which is a left child
+            node *temp = root->left;
+            delete root;
+            root = temp;
+        }
+        else
+        {
+            /// you want to delete a node with two child nodes
+
+            node* leftMaxNode = findMaximum(root->left); // find the max in root->left (left subtree)
+            swap(root->data, leftMaxNode->data); // then swap the root data with the max in left subtree
+            root->left = deleteFromBST(root->left, key); // then deletet the root by using recursion
+
+            // node *rightMinNode = findMinimum(root->right);
+            // swap(root->data, rightMinNode->data);
+            // root->right = deleteFromBST(root->right, key);
+        }
+    }
+
+    return root;
+}
+
+int main()
+{
+
+    node *root = new node(10);
+
+    root->left = new node(5);
+    root->left->left = new node(3);
+    root->left->right = new node(7);
+    root->left->right->left = new node(6);
+    root->left->right->right = new node(9);
+    root->left->right->right->left = new node(8);
+
+    root->right = new node(15);
+    root->right->left = new node(13);
+    root->right->right = new node(17);
+    root->right->left->left = new node(11);
+    root->right->right->left = new node(16);
+    root->right->right->right = new node(18);
+
+    inOrder(root);
+    cout << endl;
+    levelOrder(root);
+    cout << endl;
+
+    root = deleteFromBST(root, 6);
+    inOrder(root);
+    cout << endl;
+    levelOrder(root);
+    cout << endl;
+
+    root = deleteFromBST(root, 7);
+    inOrder(root);
+    cout << endl;
+    levelOrder(root);
+    cout << endl;
+
+    root = deleteFromBST(root, 10);
+    inOrder(root);
+    cout << endl;
+    levelOrder(root);
+    cout << endl;
+
+    return 0;
+}

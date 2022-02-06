@@ -130,7 +130,7 @@ bool checkBSTEfficient(node* root, ll lb, ll ub) {
 	}
 	// recursive case
     // Similar like X && Y && Z
-	return root->data > lb && root->data < ub && // check inbetween 
+	return root->data > lb && root->data < ub && // for check  root value within the valid range 
 	       checkBSTEfficient(root->left, lb, root->data) && // For check left
 	       checkBSTEfficient(root->right, root->data, ub); // For check right
 

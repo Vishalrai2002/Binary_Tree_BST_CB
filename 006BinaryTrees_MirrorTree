@@ -97,7 +97,7 @@ node* mirror(node* root) {
 int main() {
 
 	node* root = buildTree();
-	root = mirror(root);
+	mirror(root);
 	preOrder(root);
 	
 	return 0;

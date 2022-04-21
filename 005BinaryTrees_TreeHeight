@@ -58,7 +58,7 @@ int height(node* root) {
 	// base case
 	if(root == NULL) {
 		// compute the height of an empty tree
-		return -1;
+		return -1; // In leetcode here you return 0;
 	}
 
 	// recursive case
